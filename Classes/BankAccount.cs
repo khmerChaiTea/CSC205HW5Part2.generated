@@ -76,5 +76,7 @@ namespace Classes
 
             return report.ToString();  // Returns the complete transaction history as a string
         }
+
+        public virtual void PerformMonthEndTransactions() { }
     }
 }
