@@ -8,10 +8,12 @@ namespace Classes
 {
     public class LineOfCreditAccount : BankAccount
     {
+        // ConstructLineOfCredit
         public LineOfCreditAccount(string name, decimal initialBalance, decimal creditLimit) : base(name, initialBalance, -creditLimit)
         {
         }
 
+        // ApplyMonthendInterest
         public override void PerformMonthEndTransactions()
         {
             if (Balance < 0)
@@ -21,5 +23,11 @@ namespace Classes
                 MakeWithdrawal(interest, DateTime.Now, "Charge monthly interest");
             }
         }
+
+        // AddOverdraftFee
+        protected override Transaction? CheckWithdrawalLimit(bool isOverdrawn) =>
+            isOverdrawn
+            ? new Transaction(-20, DateTime.Now, "Apply overdraft fee")
+            : default;
     }
 }

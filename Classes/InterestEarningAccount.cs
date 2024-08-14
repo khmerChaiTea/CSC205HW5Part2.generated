@@ -8,10 +8,12 @@ namespace Classes
 {
     public class InterestEarningAccount : BankAccount
     {
+        // DerivedConstructor
         public InterestEarningAccount(string name, decimal initialBalance) : base(name, initialBalance)
         {
         }
 
+        // ApplyMonthendInterest
         public override void PerformMonthEndTransactions()
         {
             if (Balance > 500m)

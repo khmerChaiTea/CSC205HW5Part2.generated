@@ -22,6 +22,7 @@ namespace Classes
             }
         }
 
+        // ConstructorModifications
         private readonly decimal _minimumBalance;
 
         public BankAccount(string name, decimal initialBalance) : this(name, initialBalance, 0) { }
@@ -52,19 +53,31 @@ namespace Classes
             _allTransactions.Add(deposit);  // Adds the deposit transaction to the list
         }
 
+        // RefactoredMakeWithdrawal
         // Method to make a withdrawal from the account
         public void MakeWithdrawal(decimal amount, DateTime date, string note)
         {
             if (amount <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(amount), "Amount of withdrawal must be positive");  // Validates that the withdrawal amount is positive
+                throw new ArgumentOutOfRangeException(nameof(amount), "Amount of withdrawal must be positive");
             }
-            if (Balance - amount < _minimumBalance)
+            Transaction? overdraftTransaction = CheckWithdrawalLimit(Balance - amount < _minimumBalance);
+            Transaction? withdrawal = new(-amount, date, note);
+            _allTransactions.Add(withdrawal);
+            if (overdraftTransaction != null)
+                _allTransactions.Add(overdraftTransaction);
+        }
+
+        protected virtual Transaction? CheckWithdrawalLimit(bool isOverdrawn)
+        {
+            if (isOverdrawn)
             {
-                throw new InvalidOperationException("Not sufficient funds for this withdrawal");  // Checks for sufficient funds before allowing the withdrawal
+                throw new InvalidOperationException("Not sufficient funds for this withdrawal");
             }
-            var withdrawal = new Transaction(-amount, date, note);  // Creates a new transaction for the withdrawal
-            _allTransactions.Add(withdrawal);  // Adds the withdrawal transaction to the list
+            else
+            {
+                return default;
+            }
         }
 
         // Method to get the history of all transactions on the account
@@ -73,16 +86,17 @@ namespace Classes
             var report = new System.Text.StringBuilder();
 
             decimal balance = 0;
-            report.AppendLine("Date\t\tAmount\tBalance\tNote");  // Header for the transaction report
+            report.AppendLine("Date\t\tAmount\t\tBalance\t\tNote");  // Header for the transaction report
             foreach (var item in _allTransactions)
             {
                 balance += item.Amount;  // Running balance
-                report.AppendLine($"{item.Date.ToShortDateString()}\t{item.Amount}\t{balance}\t{item.Notes}");  // Appends each transaction to the report
+                report.AppendLine($"{item.Date.ToShortDateString()}\t{item.Amount, 10:F2}\t{balance, 10:F2}\t{item.Notes}");  // Appends each transaction to the report
             }
 
             return report.ToString();  // Returns the complete transaction history as a string
         }
 
+        // DeclareMonthEndTransactions
         public virtual void PerformMonthEndTransactions() { }
     }
 }
