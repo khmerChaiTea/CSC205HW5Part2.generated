@@ -18,7 +18,7 @@ Console.WriteLine(account.GetAccountHistory());
 var account2 = new BankAccount("<Tom>", 2000);
 Console.WriteLine($"Account {account2.Number} was created for {account2.Owner} with {account2.Balance} initial balance.");
 
-var giftCard = new GiftCardAccount("gift card", 100, 50);
+var giftCard = new GiftCardAccount("Gift card", 100, 50);
 giftCard.MakeWithdrawal(20, DateTime.Now, "Get expensive coffee");
 giftCard.MakeWithdrawal(50, DateTime.Now, "Buy groceries");
 giftCard.PerformMonthEndTransactions();
