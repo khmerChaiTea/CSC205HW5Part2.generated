@@ -22,14 +22,20 @@ namespace Classes
             }
         }
 
+        private readonly decimal _minimumBalance;
+
+        public BankAccount(string name, decimal initialBalance) : this(name, initialBalance, 0) { }
+
         // Constructor to initialize the account with an owner and an initial balance
-        public BankAccount(string name, decimal initialBalance)
+        public BankAccount(string name, decimal initialBalance, decimal minimumBalance)
         {
-            Number = s_accountNumberSeed.ToString();  // Assigns a unique account number
+            Number = s_accountNumberSeed.ToString();    // Assigns a unique account number
             s_accountNumberSeed++;  // Increments the account number seed for the next account
 
             Owner = name;
-            MakeDeposit(initialBalance, DateTime.Now, "Initial balance");  // Adds the initial balance as the first transaction
+            _minimumBalance = minimumBalance;
+            if (initialBalance > 0)
+                MakeDeposit(initialBalance, DateTime.Now, "Initial balance");   // Adds the initial balance as the first transaction
         }
 
         // Private field to store all transactions associated with the account
@@ -53,7 +59,7 @@ namespace Classes
             {
                 throw new ArgumentOutOfRangeException(nameof(amount), "Amount of withdrawal must be positive");  // Validates that the withdrawal amount is positive
             }
-            if (Balance - amount < 0)
+            if (Balance - amount < _minimumBalance)
             {
                 throw new InvalidOperationException("Not sufficient funds for this withdrawal");  // Checks for sufficient funds before allowing the withdrawal
             }
