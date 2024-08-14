@@ -19,7 +19,7 @@ namespace Classes
             if (Balance > 500m)
             {
                 decimal interest = Balance * 0.02m;
-                MakeDeposit(interest, DateTime.Now, "apply monthly interest");
+                MakeDeposit(interest, DateTime.Now, "Apply monthly interest");
             }
         }
     }
